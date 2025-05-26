@@ -4,6 +4,7 @@ import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { AddToCartButton } from "@/components/add-to-cart-button";
 import Image from "next/image";
 import { Tables } from "@/database.types";
+import { QuantityInCart } from "@/components/quantity-in-cart";
 
 export function ProductCard({ product }: { product: Tables<"products"> }) {
   return (
@@ -27,6 +28,7 @@ export function ProductCard({ product }: { product: Tables<"products"> }) {
           </div>
           <p className="font-medium">{product.price.toFixed(2)}€</p>
         </div>
+        <QuantityInCart product={product} />
         <AddToCartButton product={product} />
       </CardHeader>
     </Card>

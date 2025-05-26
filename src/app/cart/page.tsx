@@ -6,7 +6,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
 import Link from "next/link";
 import { ChevronLeft, Trash2, MinusCircle, PlusCircle } from "lucide-react";
-import { checkStock } from "@/services/stockService";
+import { checkStockQuantity } from "@/services/stockService";
+import { QuantityInCart } from "@/components/quantity-in-cart";
 
 interface Product {
   id: number;
@@ -123,14 +124,28 @@ export default function CartPage() {
                       <p className="text-sm text-muted-foreground mb-2">
                         {item.description}
                       </p>
+                      <QuantityInCart
+                        product={{
+                          id: item.id,
+                          name: item.name,
+                          price: item.price,
+                          description: item.description,
+                          category: item.category_id,
+                          lastupdate: "",
+                          stock: item.quantity,
+                        }}
+                        showInCartProductInfo={false}
+                      />
                       <div className="flex justify-between items-center">
                         <div className="flex items-center gap-2">
                           <Button
                             variant="outline"
                             size="icon"
-                            onClick={() =>
-                              updateQuantity(item.id, item.quantity - 1)
-                            }
+                            onClick={() => {
+                              updateQuantity(item.id, item.quantity - 1);
+                              // Dispatch custom event to notify components about this click
+                              window.dispatchEvent(new Event("cartUpdated"));
+                            }}
                           >
                             <MinusCircle className="h-4 w-4" />
                           </Button>
@@ -140,12 +155,14 @@ export default function CartPage() {
                             size="icon"
                             onClick={async () => {
                               // Check if there's stock of this product
-                              const availableStock = await checkStock(
+                              const availableStock = await checkStockQuantity(
                                 item.id,
                                 item.quantity
                               );
-                              availableStock &&
+                              availableStock > 0 &&
                                 updateQuantity(item.id, item.quantity + 1);
+                              // Dispatch custom event to notify components about this click
+                              window.dispatchEvent(new Event("cartUpdated"));
                             }}
                           >
                             <PlusCircle className="h-4 w-4" />

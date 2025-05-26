@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart } from "lucide-react";
 import { Tables } from "@/database.types";
-import { checkStock } from "@/services/stockService";
+import { checkStockQuantity } from "@/services/stockService";
 
 interface CartItem extends Tables<"products"> {
   quantity: number;
@@ -23,8 +23,10 @@ export function AddToCartButton({ product }: { product: Tables<"products"> }) {
 
     // Check if there's stock of this product
     if (
-      (await checkStock(product.id, cart[existingItemIndex]?.quantity ?? 0)) ===
-      false
+      (await checkStockQuantity(
+        product.id,
+        cart[existingItemIndex]?.quantity ?? 0
+      )) <= 0
     ) {
       return null;
     }

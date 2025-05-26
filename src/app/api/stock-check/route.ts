@@ -15,5 +15,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Product not found" }, { status: 404 });
   }
 
-  return NextResponse.json({ inStock: quantityInCart < data?.stock });
+  return NextResponse.json({
+    inStockQuantity: data?.stock - quantityInCart,
+  });
 }
