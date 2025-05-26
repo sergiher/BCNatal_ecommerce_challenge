@@ -4,6 +4,8 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart } from "lucide-react";
 import { Tables } from "@/database.types";
+import { checkStock } from "@/services/stockService";
+import { toast } from "sonner";
 
 interface CartItem extends Tables<"products"> {
   quantity: number;
@@ -12,15 +14,24 @@ interface CartItem extends Tables<"products"> {
 export function AddToCartButton({ product }: { product: Tables<"products"> }) {
   const [isAdding, setIsAdding] = useState(false);
 
-  const addToCart = () => {
-    setIsAdding(true);
-
+  const addToCart = async () => {
     // Get current cart from localStorage
     const existingCart = localStorage.getItem("cart");
     const cart: CartItem[] = existingCart ? JSON.parse(existingCart) : [];
 
     // Check if product already in cart
     const existingItemIndex = cart.findIndex((item) => item.id === product.id);
+
+    // Check if there's stock of this product
+    if (
+      (await checkStock(product.id, cart[existingItemIndex]?.quantity ?? 0)) ===
+      false
+    ) {
+      toast.error("No stock");
+      return null;
+    }
+
+    setIsAdding(true);
 
     if (existingItemIndex >= 0) {
       // Increment quantity if product already in cart
