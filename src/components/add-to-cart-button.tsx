@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { ShoppingCart } from "lucide-react";
 import { Tables } from "@/database.types";
 import { checkStock } from "@/services/stockService";
-import { toast } from "sonner";
 
 interface CartItem extends Tables<"products"> {
   quantity: number;
@@ -27,7 +26,6 @@ export function AddToCartButton({ product }: { product: Tables<"products"> }) {
       (await checkStock(product.id, cart[existingItemIndex]?.quantity ?? 0)) ===
       false
     ) {
-      toast.error("No stock");
       return null;
     }
 

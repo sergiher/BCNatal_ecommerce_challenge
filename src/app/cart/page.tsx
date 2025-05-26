@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
 import Link from "next/link";
 import { ChevronLeft, Trash2, MinusCircle, PlusCircle } from "lucide-react";
+import { checkStock } from "@/services/stockService";
 
 interface Product {
   id: number;
@@ -137,9 +138,15 @@ export default function CartPage() {
                           <Button
                             variant="outline"
                             size="icon"
-                            onClick={() =>
-                              updateQuantity(item.id, item.quantity + 1)
-                            }
+                            onClick={async () => {
+                              // Check if there's stock of this product
+                              const availableStock = await checkStock(
+                                item.id,
+                                item.quantity
+                              );
+                              availableStock &&
+                                updateQuantity(item.id, item.quantity + 1);
+                            }}
                           >
                             <PlusCircle className="h-4 w-4" />
                           </Button>
