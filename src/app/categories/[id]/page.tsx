@@ -1,12 +1,11 @@
 import { createClient } from "@/utils/supabase/server";
 import { Button } from "@/components/ui/button";
 import { UserProfile } from "@/components/user-profile";
-import { ProductCard } from "@/components/product-card";
 import { CartButton } from "@/components/cart-button";
+import { ProductList } from "@/components/product-list";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
-import { Tables } from "@/database.types";
 
 export default async function Page({ params }: { params: { id: string } }) {
   const supabase = await createClient();
@@ -54,11 +53,12 @@ export default async function Page({ params }: { params: { id: string } }) {
           )}
         </div>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-        {products?.map((product: Tables<"products">) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
-      </div>
+
+      {products ? (
+        <ProductList products={products} />
+      ) : (
+        <p>No products found</p>
+      )}
     </div>
   );
 }
