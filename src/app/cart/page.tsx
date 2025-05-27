@@ -7,6 +7,7 @@ import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import { CartItemWithStockInfo } from "@/components/cart-item-with-stock-info";
 import { CartItem } from "@/domain/CartItem";
+import { toast } from "sonner";
 
 export default function CartPage() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
@@ -43,6 +44,15 @@ export default function CartPage() {
   const clearCart = () => {
     setCartItems([]);
     localStorage.removeItem("cart");
+  };
+
+  const checkoutCart = () => {
+    try {
+      clearCart();
+      toast.success("Checkout successful!");
+    } catch (error) {
+      toast.error("Checkout error");
+    }
   };
 
   const getTotalPrice = () => {
@@ -102,7 +112,9 @@ export default function CartPage() {
                   {getTotalPrice().toFixed(2)}€
                 </p>
               </div>
-              <Button className="w-full mt-4">Proceed to Checkout</Button>
+              <Button className="w-full mt-4" onClick={checkoutCart}>
+                Proceed to Checkout
+              </Button>
             </CardContent>
           </Card>
         </>
