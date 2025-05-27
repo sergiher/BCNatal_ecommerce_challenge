@@ -3,12 +3,11 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import Link from "next/link";
-import { ChevronLeft } from "lucide-react";
 import { CartItemWithStockInfo } from "@/components/cart-item-with-stock-info";
 import { CartItem } from "@/domain/CartItem";
 import { toast } from "sonner";
 import { placeOrderCart } from "@/services/cartService";
+import { GoBackButton } from "@/components/go-back-button";
 
 export default function CartPage() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
@@ -76,11 +75,7 @@ export default function CartPage() {
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-6">
         <div className="flex items-center gap-4">
-          <Link href="/">
-            <Button variant="ghost" size="icon">
-              <ChevronLeft />
-            </Button>
-          </Link>
+          <GoBackButton type="ghost" />
           <h1 className="text-3xl font-bold">Shopping Cart</h1>
         </div>
         {cartItems.length > 0 && (
@@ -93,9 +88,7 @@ export default function CartPage() {
       {cartItems.length === 0 ? (
         <div className="text-center py-12">
           <h2 className="text-xl mb-4">Your cart is empty</h2>
-          <Link href="/">
-            <Button>Continue Shopping</Button>
-          </Link>
+          <GoBackButton label="Continue Shopping" />
         </div>
       ) : (
         <>
