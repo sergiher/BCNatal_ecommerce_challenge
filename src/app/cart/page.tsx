@@ -8,6 +8,7 @@ import { ChevronLeft } from "lucide-react";
 import { CartItemWithStockInfo } from "@/components/cart-item-with-stock-info";
 import { CartItem } from "@/domain/CartItem";
 import { toast } from "sonner";
+import { placeOrderCart } from "@/services/cartService";
 
 export default function CartPage() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
@@ -46,12 +47,17 @@ export default function CartPage() {
     localStorage.removeItem("cart");
   };
 
-  const checkoutCart = () => {
+  const checkoutCart = async () => {
     try {
+      await placeOrderCart(cartItems);
       clearCart();
       toast.success("Checkout successful!");
-    } catch (error) {
-      toast.error("Checkout error");
+    } catch (error: any) {
+      if (error.status === 401) {
+        toast.error("You have to go back and sign in");
+      } else {
+        toast.error("Checkout error");
+      }
     }
   };
 
