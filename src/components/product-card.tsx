@@ -3,48 +3,13 @@
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { AddToCartButton } from "@/components/add-to-cart-button";
 import Image from "next/image";
-import { Tables } from "@/database.types";
 import { QuantityInCart } from "@/components/quantity-in-cart";
-import { useEffect, useState } from "react";
-import { checkStockQuantity } from "@/services/stockService";
+import { useStockQuantity } from "@/services/stockService";
+import { CartItem } from "@/domain/CartItem";
 
-interface CartItem extends Tables<"products"> {
-  quantity: number;
-}
-
-export function ProductCard({ product }: { product: Tables<"products"> }) {
-  const [quantityInCart, setQuantityInCart] = useState<number>();
-  const [inStockQuantity, setInStockQuantity] = useState<number>();
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const loadCartAndStock = async () => {
-      setLoading(true);
-      const existingCart = localStorage.getItem("cart");
-      const cart: CartItem[] = existingCart ? JSON.parse(existingCart) : [];
-
-      const existingItem = cart.find((item) => item.id === product.id);
-      if (existingItem) {
-        setQuantityInCart(existingItem.quantity);
-      } else {
-        setQuantityInCart(0);
-      }
-
-      const stock = await checkStockQuantity(
-        product.id,
-        existingItem?.quantity ?? 0,
-        false
-      );
-      setInStockQuantity(stock);
-      setLoading(false);
-    };
-
-    loadCartAndStock();
-
-    window.addEventListener("cartUpdated", loadCartAndStock);
-    return () => window.removeEventListener("cartUpdated", loadCartAndStock);
-  }, [product.id]);
-
+export function ProductCard({ product }: { product: CartItem }) {
+  const { quantityInCart, inStockQuantity, loading } =
+    useStockQuantity(product);
   return (
     <Card className="hover:shadow-lg transition-shadow">
       <CardHeader className="space-y-2">
@@ -67,7 +32,6 @@ export function ProductCard({ product }: { product: Tables<"products"> }) {
           <p className="font-medium">{product.price.toFixed(2)}€</p>
         </div>
         <QuantityInCart
-          product={product}
           loading={loading}
           quantityInCart={quantityInCart}
           inStockQuantity={inStockQuantity}

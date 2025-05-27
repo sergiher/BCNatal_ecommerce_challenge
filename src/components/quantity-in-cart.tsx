@@ -1,23 +1,19 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Tables } from "@/database.types";
-import { checkStockQuantity } from "@/services/stockService";
-import { Hourglass } from "lucide-react";
 import { InCartProductInfo } from "./in-cart-product-info";
 import { AvailableProductInfo } from "./available-product-info";
 
 export function QuantityInCart({
-  product,
-  showInCartProductInfo = true,
+  inProductCardComp = true,
+  inCartPage = false,
   loading,
   quantityInCart,
   inStockQuantity,
 }: {
-  product: Tables<"products">;
-  showInCartProductInfo?: boolean;
+  inProductCardComp?: boolean;
+  inCartPage?: boolean;
   loading: boolean;
-  quantityInCart: number | undefined;
+  quantityInCart?: number | undefined;
   inStockQuantity: number | undefined;
 }) {
   return (
@@ -30,7 +26,7 @@ export function QuantityInCart({
             paddingBottom: "10px",
           }}
         >
-          {showInCartProductInfo && (
+          {inProductCardComp && (
             <InCartProductInfo
               loading={loading}
               quantityInCart={quantityInCart}
@@ -40,6 +36,16 @@ export function QuantityInCart({
             loading={loading}
             inStockQuantity={inStockQuantity}
           />
+          {inCartPage &&
+            inStockQuantity !== undefined &&
+            inStockQuantity <= 0 && (
+              <>
+                &nbsp;-&nbsp;
+                <span style={{ color: "red" }}>
+                  {process.env.NEXT_PUBLIC_NO_STOCK_MESSAGE}
+                </span>
+              </>
+            )}
         </div>
       </div>
     </>

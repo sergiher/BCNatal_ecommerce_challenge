@@ -3,24 +3,10 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import Image from "next/image";
 import Link from "next/link";
-import { ChevronLeft, Trash2, MinusCircle, PlusCircle } from "lucide-react";
-import { checkStockQuantity } from "@/services/stockService";
-import { QuantityInCart } from "@/components/quantity-in-cart";
-
-interface Product {
-  id: number;
-  name: string;
-  price: number;
-  description: string;
-  image: string;
-  category_id: number;
-}
-
-interface CartItem extends Product {
-  quantity: number;
-}
+import { ChevronLeft } from "lucide-react";
+import { CartItemWithStockInfo } from "@/components/cart-item-with-stock-info";
+import { CartItem } from "@/domain/CartItem";
 
 export default function CartPage() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
@@ -99,83 +85,12 @@ export default function CartPage() {
         <>
           <div className="grid gap-6 mb-6">
             {cartItems.map((item) => (
-              <Card key={item.id}>
-                <CardContent className="p-6">
-                  <div className="flex gap-4">
-                    <div className="relative w-24 h-24">
-                      <Image
-                        src={`/products/${item.id}.png`}
-                        alt={item.name}
-                        fill
-                        className="object-contain"
-                      />
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex justify-between">
-                        <h3 className="font-medium">{item.name}</h3>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => removeFromCart(item.id)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                      <p className="text-sm text-muted-foreground mb-2">
-                        {item.description}
-                      </p>
-                      <QuantityInCart
-                        product={{
-                          id: item.id,
-                          name: item.name,
-                          price: item.price,
-                          description: item.description,
-                          category: item.category_id,
-                          lastupdate: "",
-                          stock: item.quantity,
-                        }}
-                        showInCartProductInfo={false}
-                      />
-                      <div className="flex justify-between items-center">
-                        <div className="flex items-center gap-2">
-                          <Button
-                            variant="outline"
-                            size="icon"
-                            onClick={() => {
-                              updateQuantity(item.id, item.quantity - 1);
-                              // Dispatch custom event to notify components about this click
-                              window.dispatchEvent(new Event("cartUpdated"));
-                            }}
-                          >
-                            <MinusCircle className="h-4 w-4" />
-                          </Button>
-                          <span>{item.quantity}</span>
-                          <Button
-                            variant="outline"
-                            size="icon"
-                            onClick={async () => {
-                              // Check if there's stock of this product
-                              const availableStock = await checkStockQuantity(
-                                item.id,
-                                item.quantity
-                              );
-                              availableStock > 0 &&
-                                updateQuantity(item.id, item.quantity + 1);
-                              // Dispatch custom event to notify components about this click
-                              window.dispatchEvent(new Event("cartUpdated"));
-                            }}
-                          >
-                            <PlusCircle className="h-4 w-4" />
-                          </Button>
-                        </div>
-                        <p className="font-medium">
-                          {(item.price * item.quantity).toFixed(2)}€
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+              <CartItemWithStockInfo
+                key={item.id}
+                item={item}
+                updateQuantity={updateQuantity}
+                removeFromCart={removeFromCart}
+              />
             ))}
           </div>
 

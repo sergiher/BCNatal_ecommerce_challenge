@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Tables } from "@/database.types";
 import { ProductCard } from "@/components/product-card";
+import { CartItem } from "@/domain/CartItem";
 
-export function ProductList({ products }: { products: Tables<"products">[] }) {
+export function ProductList({ products }: { products: CartItem[] }) {
   const [query, setQuery] = useState("");
   const filtered = products.filter((product) =>
     product.name.toLowerCase().includes(query.toLowerCase())

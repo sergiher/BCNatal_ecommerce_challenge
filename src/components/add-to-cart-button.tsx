@@ -3,18 +3,14 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart } from "lucide-react";
-import { Tables } from "@/database.types";
 import { checkStockQuantity } from "@/services/stockService";
-
-interface CartItem extends Tables<"products"> {
-  quantity: number;
-}
+import { CartItem } from "@/domain/CartItem";
 
 export function AddToCartButton({
   product,
   inStockQuantity,
 }: {
-  product: Tables<"products">;
+  product: CartItem;
   inStockQuantity: number | undefined;
 }) {
   const [isAdding, setIsAdding] = useState(false);
@@ -72,7 +68,7 @@ export function AddToCartButton({
         <ShoppingCart className="mr-1 h-4 w-4" />
       )}
       {inStockQuantity !== undefined && inStockQuantity <= 0
-        ? "Out of stock"
+        ? process.env.NEXT_PUBLIC_NO_STOCK_MESSAGE
         : isAdding
         ? "Added!"
         : "Add to cart"}
