@@ -12,7 +12,7 @@ export function ProductCard({ product }: { product: CartItem }) {
     useStockQuantity(product);
   return (
     <Card className="hover:shadow-lg transition-shadow">
-      <CardHeader className="space-y-2">
+      <CardHeader className="flex flex-col flex-1 space-y-2">
         <div className="relative w-full h-40 sm:h-48 rounded-xl overflow-hidden p-4">
           <Image
             src={`/products/${product.id}.png`}
@@ -36,7 +36,12 @@ export function ProductCard({ product }: { product: CartItem }) {
           quantityInCart={quantityInCart}
           inStockQuantity={inStockQuantity}
         />
-        <AddToCartButton product={product} inStockQuantity={inStockQuantity} />
+        <div className="w-full mt-auto">
+          <AddToCartButton
+            product={product}
+            inStockQuantity={inStockQuantity}
+          />
+        </div>
       </CardHeader>
     </Card>
   );
