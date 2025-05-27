@@ -25,9 +25,10 @@ export function ProductCard({ product }: { product: CartItem }) {
         <div className="flex justify-between items-start gap-4">
           <div>
             <CardTitle className="text-lg">{product.name}</CardTitle>
-            <p className="text-sm text-muted-foreground">
-              {product.description}
-            </p>
+            <p
+              className="text-sm text-muted-foreground"
+              dangerouslySetInnerHTML={{ __html: product.description }}
+            />
           </div>
           <p className="font-medium">{product.price.toFixed(2)}€</p>
         </div>
