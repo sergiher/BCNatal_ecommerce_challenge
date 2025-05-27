@@ -8,6 +8,7 @@ import { CartItem } from "@/domain/CartItem";
 import { toast } from "sonner";
 import { placeOrderCart } from "@/services/cartService";
 import { GoBackButton } from "@/components/go-back-button";
+import Link from "next/link";
 
 export default function CartPage() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
@@ -88,7 +89,9 @@ export default function CartPage() {
       {cartItems.length === 0 ? (
         <div className="text-center py-12">
           <h2 className="text-xl mb-4">Your cart is empty</h2>
-          <GoBackButton label="Continue Shopping" />
+          <Link href="/">
+            <Button>Continue Shopping</Button>
+          </Link>
         </div>
       ) : (
         <>
