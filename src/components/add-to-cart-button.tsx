@@ -10,7 +10,13 @@ interface CartItem extends Tables<"products"> {
   quantity: number;
 }
 
-export function AddToCartButton({ product }: { product: Tables<"products"> }) {
+export function AddToCartButton({
+  product,
+  inStockQuantity,
+}: {
+  product: Tables<"products">;
+  inStockQuantity: number | undefined;
+}) {
   const [isAdding, setIsAdding] = useState(false);
 
   const addToCart = async () => {
@@ -58,10 +64,18 @@ export function AddToCartButton({ product }: { product: Tables<"products"> }) {
       onClick={addToCart}
       size="sm"
       className="w-full mt-2"
-      disabled={isAdding}
+      disabled={
+        isAdding || (inStockQuantity !== undefined && inStockQuantity <= 0)
+      }
     >
-      <ShoppingCart className="mr-1 h-4 w-4" />
-      {isAdding ? "Added!" : "Add to cart"}
+      {inStockQuantity !== undefined && inStockQuantity > 0 && (
+        <ShoppingCart className="mr-1 h-4 w-4" />
+      )}
+      {inStockQuantity !== undefined && inStockQuantity <= 0
+        ? "Out of stock"
+        : isAdding
+        ? "Added!"
+        : "Add to cart"}
     </Button>
   );
 }
